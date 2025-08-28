@@ -80,7 +80,7 @@ main#chat{
   height:min(88vh, 980px);
 }
 
-/* 左侧面板改为常驻 */
+/* 左侧面板常驻（取代旧抽屉绝对定位） */
 .drawer{
   position:static;
   width:auto; height:auto;
@@ -94,7 +94,7 @@ main#chat{
 .drawer-actions{display:flex;gap:8px}
 .only-mobile{display:none}
 
-.workspace{display:flex;flex-direction:column;min-width:0} /* 右侧允许收缩 */
+.workspace{display:flex;flex-direction:column;min-width:0}
 .bar{display:flex;align-items:center;justify-content:space-between;padding:6px 4px 0}
 
 /* 移动端：上下堆叠，左栏可折叠 */
@@ -107,3 +107,4 @@ main#chat{
   .only-mobile{display:inline-block}
   .drawer.collapsed{display:none}
 }
+
