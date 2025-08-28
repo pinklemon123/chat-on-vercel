@@ -72,3 +72,38 @@ main#chat{
   header{flex-direction:column;align-items:flex-start;gap:8px}
   .toolbar{width:100%}
 }
+/* 分栏布局 */
+.glass.split{
+  display:grid;
+  grid-template-columns: 320px 1fr;
+  gap:12px;
+  height:min(88vh, 980px);
+}
+
+/* 左侧面板改为常驻 */
+.drawer{
+  position:static;
+  width:auto; height:auto;
+  display:flex; flex-direction:column; gap:10px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:12px;
+}
+.drawer-head{display:flex;justify-content:space-between;align-items:center}
+.drawer-actions{display:flex;gap:8px}
+.only-mobile{display:none}
+
+.workspace{display:flex;flex-direction:column;min-width:0} /* 右侧允许收缩 */
+.bar{display:flex;align-items:center;justify-content:space-between;padding:6px 4px 0}
+
+/* 移动端：上下堆叠，左栏可折叠 */
+@media (max-width: 960px){
+  .glass.split{
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    gap:10px;
+  }
+  .only-mobile{display:inline-block}
+  .drawer.collapsed{display:none}
+}

@@ -5,28 +5,79 @@
 <link rel="stylesheet" href="/assets/styles.css" />
 
 <div class="page">
-  <div class="glass">
-    <header>
-  <h1>AI Chat</h1>
+  <div class="glass split">
+  <!-- 左侧：提示词库 -->
+  <aside id="drawer" class="drawer">
+    <div class="drawer-head">
+      <h2>提示词库</h2>
+      <div class="drawer-actions">
+        <button id="newPrompt">新建</button>
+        <!-- 移动端折叠按钮 -->
+        <button id="collapsePrompts" class="only-mobile">收起</button>
+      </div>
+    </div>
+    <div id="promptList" class="prompt-list"></div>
+    <div class="prompt-editor" id="editor" data-id="">
+      <div class="row">
+        <label>名称</label>
+        <input id="pName" placeholder="例如：项目助理 / 图像标注专家" />
+      </div>
+      <div class="row">
+        <label>放入频率</label>
+        <select id="pMode">
+          <option value="every">每次请求都注入</option>
+          <option value="once">仅本轮首次注入</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>系统提示词（支持 {{project}} / {{lang}} …）</label>
+        <textarea id="pContent" rows="8"></textarea>
+      </div>
+      <div class="row">
+        <label>Few-shot（user:/assistant: 一行一条）</label>
+        <textarea id="pFewshot" rows="6"></textarea>
+      </div>
+      <div class="row actions">
+        <button id="savePrompt">保存</button>
+        <button id="deletePrompt" class="danger">删除</button>
+        <button id="setActive">设为当前</button>
+      </div>
+    </div>
+  </aside>
 
-  <!-- 新增：页签导航（基于 #chat / #prompts 的 Hash 路由） -->
-  <nav class="tabs">
-    <a href="#chat" id="tabChat">聊天</a>
-    <a href="#prompts" id="tabPrompts">提示词库</a>
-  </nav>
+  <!-- 右侧：聊天工作区 -->
+  <section class="workspace">
+    <header class="bar">
+      <h1>AI Chat</h1>
+      <div class="toolbar">
+        <!-- 移动端显示“打开提示词库”按钮 -->
+        <button id="expandPrompts" class="only-mobile">提示词库</button>
 
-  <div class="toolbar">
-    <!-- 删除原先的 <button id="togglePrompts">提示词库</button> -->
-    <label class="switch">
-      <input type="checkbox" id="useSystem" checked />
-      <span>启用系统提示词</span>
-    </label>
-    <button id="exportPrompts">导出提示词</button>
-    <label class="import-btn">
-      导入<input type="file" id="importPrompts" accept="application/json" />
-    </label>
-    <button id="clear">清空对话</button>
-  </div>
+        <label class="switch">
+          <input type="checkbox" id="useSystem" checked />
+          <span>启用系统提示词</span>
+        </label>
+
+        <button id="exportPrompts">导出提示词</button>
+        <label class="import-btn">
+          导入<input type="file" id="importPrompts" accept="application/json" />
+        </label>
+
+        <button id="clear">清空对话</button>
+      </div>
+    </header>
+
+    <div id="activeBar" class="active-bar"></div>
+
+    <main id="chat"></main>
+
+    <form id="composer">
+      <textarea id="q" rows="3" placeholder="左侧设置提示词，右侧聊天。（Enter 发送，Shift+Enter 换行）"></textarea>
+      <button id="send" type="submit">发送</button>
+    </form>
+  </section>
+</div>
+
 </header>
 
 

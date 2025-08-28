@@ -1,7 +1,6 @@
 // 提示词库：本地存储 + 预置合并 + 渲染/编辑/导出/导入 + 变量模板
-import { qs, toggle } from './ui.js';
+import { qs } from './ui.js';
 
-const drawer = qs('#drawer');
 const promptList = qs('#promptList');
 const editor = qs('#editor');
 const pName = qs('#pName');
@@ -27,7 +26,6 @@ export async function ensurePresetsLoaded() {
     const r = await fetch('/data/presets.json');
     if (r.ok) {
       const presets = await r.json();
-      // 只在首次导入时合并
       state.prompts.push(...presets.map(p => ({ ...p, id: p.id || uuid() })));
       localStorage.setItem('presetsMerged', 'true');
       save();
@@ -52,11 +50,11 @@ export function renderPromptList(){
 function renderActiveBar(){
   const cur = state.prompts.find(x => x.id===state.activePromptId);
   if (cur) {
-    toggle(activeBar, true);
     activeBar.textContent = `当前系统提示词：${cur.name}（${cur.mode==='every'?'每次注入':'仅首次注入'}）`;
     activeBar.classList.remove('hidden');
   } else {
-    toggle(activeBar, false);
+    activeBar.classList.add('hidden');
+    activeBar.textContent = '';
   }
 }
 
@@ -85,7 +83,7 @@ export function saveEditor(){
   };
   const i = state.prompts.findIndex(x => x.id===id);
   if (i>=0) state.prompts[i] = obj; else state.prompts.push(obj);
-  if (!state.activePromptId) state.activePromptId = id; // 首次保存自动设为当前
+  if (!state.activePromptId) state.activePromptId = id;
   save(); renderPromptList(); loadEditor(id);
 }
 
@@ -120,7 +118,6 @@ export function importPrompts(file){
     try {
       const arr = JSON.parse(reader.result);
       if (Array.isArray(arr)) {
-        // 合并：按 name 去重
         const map = new Map(state.prompts.map(p => [p.name, p]));
         arr.forEach(p => map.set(p.name, { ...p, id: p.id || uuid() }));
         state.prompts = [...map.values()];
@@ -131,13 +128,12 @@ export function importPrompts(file){
   reader.readAsText(file);
 }
 
-// 应用当前激活提示词，生成要注入到 messages 的数组
+// 构建要注入的 system/few-shot 消息
 export function buildSystemMessages(vars = {}) {
   if (!state.activePromptId) return [];
   const cur = state.prompts.find(x => x.id===state.activePromptId);
   if (!cur) return [];
 
-  // once 模式：只在本轮首次注入
   if (cur.mode === 'once' && state.injectedOnceFlag === 'true') return [];
 
   const sys = interpolate(cur.content || '', vars);
@@ -153,19 +149,12 @@ export function buildSystemMessages(vars = {}) {
     if (['user','assistant','system'].includes(role)) msgs.push({ role, content });
   }
 
-  // 如果是 once，这一轮发出后标记为已注入
   if (cur.mode === 'once') {
     state.injectedOnceFlag = 'true'; save();
   }
   return msgs;
 }
 
-// 简单模板变量替换：{{var}}
 function interpolate(tpl, vars) {
   return tpl.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, k) => (vars[k] ?? ''));
 }
-
-// 侧栏显隐
-export function openDrawer(){ drawer.classList.remove('hidden'); }
-export function closeDrawer(){ drawer.classList.add('hidden'); }
-export function isDrawerOpen(){ return !drawer.classList.contains('hidden'); }
