@@ -1,8 +1,0 @@
-{
-  "name": "chat-on-vercel",
-  "private": true,
-  "scripts": {
-    "dev": "vercel dev",
-    "deploy": "vercel --prod"
-  }
-}
