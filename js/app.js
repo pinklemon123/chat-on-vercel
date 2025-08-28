@@ -5,14 +5,13 @@ import {
   saveEditor, deleteEditor, setActive, exportPrompts, importPrompts
 } from './promptlib.js';
 
-const newPromptBtn   = qs('#newPrompt');
-const saveBtn        = qs('#savePrompt');
-const delBtn         = qs('#deletePrompt');
-const setActiveBtn   = qs('#setActive');
-const exportBtn      = qs('#exportPrompts');
-const importInput    = qs('#importPrompts');
+const newPromptBtn = qs('#newPrompt');
+const saveBtn = qs('#savePrompt');
+const delBtn = qs('#deletePrompt');
+const setActiveBtn = qs('#setActive');
+const exportBtn = qs('#exportPrompts');
+const importInput = qs('#importPrompts');
 
-// 初始化
 (async function init(){
   await ensurePresetsLoaded();
   renderPromptList();
@@ -34,8 +33,6 @@ importInput?.addEventListener('change', e => {
 
 // —— 移动端折叠/展开 —— //
 const drawer = qs('#drawer');
-const collapseBtn = qs('#collapsePrompts');
-const expandBtn   = qs('#expandPrompts');
+qs('#collapsePrompts')?.addEventListener('click', () => drawer.classList.add('collapsed'));
+qs('#expandPrompts')?.addEventListener('click',   () => drawer.classList.remove('collapsed'));
 
-collapseBtn?.addEventListener('click', () => drawer.classList.add('collapsed'));
-expandBtn?.addEventListener('click',   () => drawer.classList.remove('collapsed'));
