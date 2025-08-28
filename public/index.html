@@ -1,0 +1,53 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Chat</title>
+<link rel="stylesheet" href="/styles.css" />
+<div class="wrap">
+  <h1>AI Chat</h1>
+  <div id="chat"></div>
+  <form id="f">
+    <textarea id="q" rows="3" placeholder="说点什么…"></textarea>
+    <button>发送</button>
+  </form>
+</div>
+<script>
+const chat = document.getElementById('chat');
+const form = document.getElementById('f');
+const q = document.getElementById('q');
+
+function add(role, text='') {
+  const b = document.createElement('div');
+  b.className = 'msg ' + role;
+  b.innerHTML = `<div class="role">${role}</div><div class="text"></div>`;
+  b.querySelector('.text').textContent = text;
+  chat.appendChild(b);
+  chat.scrollTop = chat.scrollHeight;
+  return b.querySelector('.text');
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const content = q.value.trim();
+  if (!content) return;
+  add('user', content);
+  q.value = '';
+  const out = add('assistant', '');
+
+  const resp = await fetch('/api/chat', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ messages: [{ role:'user', content }] })
+  });
+
+  // 逐字流式追加
+  const reader = resp.body.getReader();
+  const dec = new TextDecoder();
+  while (true) {
+    const {value, done} = await reader.read();
+    if (done) break;
+    out.textContent += dec.decode(value);
+    chat.scrollTop = chat.scrollHeight;
+  }
+});
+</script>
