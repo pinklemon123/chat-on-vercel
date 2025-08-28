@@ -6,109 +6,29 @@
 
 <div class="page">
   <div class="glass split">
-  <!-- 左侧：提示词库 -->
-  <aside id="drawer" class="drawer">
-    <div class="drawer-head">
-      <h2>提示词库</h2>
-      <div class="drawer-actions">
-        <button id="newPrompt">新建</button>
-        <!-- 移动端折叠按钮 -->
-        <button id="collapsePrompts" class="only-mobile">收起</button>
-      </div>
-    </div>
-    <div id="promptList" class="prompt-list"></div>
-    <div class="prompt-editor" id="editor" data-id="">
-      <div class="row">
-        <label>名称</label>
-        <input id="pName" placeholder="例如：项目助理 / 图像标注专家" />
-      </div>
-      <div class="row">
-        <label>放入频率</label>
-        <select id="pMode">
-          <option value="every">每次请求都注入</option>
-          <option value="once">仅本轮首次注入</option>
-        </select>
-      </div>
-      <div class="row">
-        <label>系统提示词（支持 {{project}} / {{lang}} …）</label>
-        <textarea id="pContent" rows="8"></textarea>
-      </div>
-      <div class="row">
-        <label>Few-shot（user:/assistant: 一行一条）</label>
-        <textarea id="pFewshot" rows="6"></textarea>
-      </div>
-      <div class="row actions">
-        <button id="savePrompt">保存</button>
-        <button id="deletePrompt" class="danger">删除</button>
-        <button id="setActive">设为当前</button>
-      </div>
-    </div>
-  </aside>
-
-  <!-- 右侧：聊天工作区 -->
-  <section class="workspace">
-    <header class="bar">
-      <h1>AI Chat</h1>
-      <div class="toolbar">
-        <!-- 移动端显示“打开提示词库”按钮 -->
-        <button id="expandPrompts" class="only-mobile">提示词库</button>
-
-        <label class="switch">
-          <input type="checkbox" id="useSystem" checked />
-          <span>启用系统提示词</span>
-        </label>
-
-        <button id="exportPrompts">导出提示词</button>
-        <label class="import-btn">
-          导入<input type="file" id="importPrompts" accept="application/json" />
-        </label>
-
-        <button id="clear">清空对话</button>
-      </div>
-    </header>
-
-    <div id="activeBar" class="active-bar"></div>
-
-    <main id="chat"></main>
-
-    <form id="composer">
-      <textarea id="q" rows="3" placeholder="左侧设置提示词，右侧聊天。（Enter 发送，Shift+Enter 换行）"></textarea>
-      <button id="send" type="submit">发送</button>
-    </form>
-  </section>
-</div>
-
-</header>
-
-
-    <!-- 提示词侧栏 -->
-    <aside id="drawer" class="drawer hidden">
+    <!-- 左侧：提示词库 -->
+    <aside id="drawer" class="drawer">
       <div class="drawer-head">
         <h2>提示词库</h2>
-        <button id="newPrompt">新建</button>
-      </div>
-      <div id="promptList" class="prompt-list"></div>
-      <div class="prompt-editor" id="editor" data-id="">
-        <div class="row">
-          <label>名称</label>
-          <input id="pName" placeholder="例如：项目助理 / 图像标注专家" />
+        <div class="drawer-actions">
+          <button id="newPrompt">新建</button>
+          <button id="collapsePrompts" class="only-mobile">收起</button>
         </div>
+      </div>
+
+      <div id="promptList" class="prompt-list"></div>
+
+      <div class="prompt-editor" id="editor" data-id="">
+        <div class="row"><label>名称</label><input id="pName" /></div>
         <div class="row">
           <label>放入频率</label>
           <select id="pMode">
-            <option value="every">每次请求都注入</option>
-            <option value="once">仅本轮首次注入</option>
+            <option value="every">每次注入</option>
+            <option value="once">仅首次注入</option>
           </select>
         </div>
-        <div class="row">
-          <label>系统提示词（支持模板变量 {{project}} / {{lang}} …）</label>
-          <textarea id="pContent" rows="8" placeholder="例如：你是一名资深全栈脚手架生成器…"></textarea>
-        </div>
-        <div class="row">
-          <label>Few-shot（可选；一行一条，前缀 role: ）</label>
-          <textarea id="pFewshot" rows="6" placeholder="user: 我想要Vite+React+FastAPI
-assistant: 我将输出目录结构、README、CI…"></textarea>
-        </div>
+        <div class="row"><label>系统提示词</label><textarea id="pContent" rows="8"></textarea></div>
+        <div class="row"><label>Few-shot（user:/assistant: 一行一条）</label><textarea id="pFewshot" rows="6"></textarea></div>
         <div class="row actions">
           <button id="savePrompt">保存</button>
           <button id="deletePrompt" class="danger">删除</button>
@@ -117,15 +37,28 @@ assistant: 我将输出目录结构、README、CI…"></textarea>
       </div>
     </aside>
 
-    <!-- 当前使用的提示词状态 -->
-    <div id="activeBar" class="active-bar hidden"></div>
+    <!-- 右侧：聊天 -->
+    <section class="workspace">
+      <header class="bar">
+        <h1>AI Chat</h1>
+        <div class="toolbar">
+          <button id="expandPrompts" class="only-mobile">提示词库</button>
+          <label class="switch"><input type="checkbox" id="useSystem" checked /><span>启用系统提示词</span></label>
+          <button id="exportPrompts">导出提示词</button>
+          <label class="import-btn">导入<input type="file" id="importPrompts" accept="application/json" /></label>
+          <button id="clear">清空对话</button>
+        </div>
+      </header>
 
-    <main id="chat"></main>
+      <div id="activeBar" class="active-bar"></div>
 
-    <form id="composer">
-      <textarea id="q" rows="3" placeholder="先在右上角“提示词库”里添加/选择系统提示词，再开始对话。（Enter 发送，Shift+Enter 换行）"></textarea>
-      <button id="send" type="submit">发送</button>
-    </form>
+      <main id="chat"></main>
+
+      <form id="composer">
+        <textarea id="q" rows="3" placeholder="左侧设置提示词，右侧聊天。（Enter 发送，Shift+Enter 换行）"></textarea>
+        <button id="send" type="submit">发送</button>
+      </form>
+    </section>
   </div>
 </div>
 
@@ -135,3 +68,4 @@ assistant: 我将输出目录结构、README、CI…"></textarea>
   import './js/chat.js';
   import './js/app.js';
 </script>
+
