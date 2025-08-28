@@ -7,20 +7,28 @@
 <div class="page">
   <div class="glass">
     <header>
-      <h1>AI Chat</h1>
-      <div class="toolbar">
-        <button id="togglePrompts">提示词库</button>
-        <label class="switch">
-          <input type="checkbox" id="useSystem" checked />
-          <span>启用系统提示词</span>
-        </label>
-        <button id="exportPrompts">导出提示词</button>
-        <label class="import-btn">
-          导入<input type="file" id="importPrompts" accept="application/json" />
-        </label>
-        <button id="clear">清空对话</button>
-      </div>
-    </header>
+  <h1>AI Chat</h1>
+
+  <!-- 新增：页签导航（基于 #chat / #prompts 的 Hash 路由） -->
+  <nav class="tabs">
+    <a href="#chat" id="tabChat">聊天</a>
+    <a href="#prompts" id="tabPrompts">提示词库</a>
+  </nav>
+
+  <div class="toolbar">
+    <!-- 删除原先的 <button id="togglePrompts">提示词库</button> -->
+    <label class="switch">
+      <input type="checkbox" id="useSystem" checked />
+      <span>启用系统提示词</span>
+    </label>
+    <button id="exportPrompts">导出提示词</button>
+    <label class="import-btn">
+      导入<input type="file" id="importPrompts" accept="application/json" />
+    </label>
+    <button id="clear">清空对话</button>
+  </div>
+</header>
+
 
     <!-- 提示词侧栏 -->
     <aside id="drawer" class="drawer hidden">
